@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.content.Context;
-
 /**
  * Base64ToGallery.java
  *
@@ -115,11 +114,11 @@ public class Base64ToGallery extends CordovaPlugin {
 
         retVal = imageFile;
       } catch (Exception e) {
-        System.out.println("Error opening the file");
+        Log.e("Base64ToGallery", "Error opening the file");
       }
 
     } catch (Exception e) {
-      Log.e("Base64ToGallery", "An exception occured while saving image: " + e.toString());
+      //Log.e("Base64ToGallery", "An exception occured while saving image: " + e.toString());
     }
 
     return retVal;
