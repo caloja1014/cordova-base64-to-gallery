@@ -78,14 +78,14 @@ public class Base64ToGallery extends CordovaPlugin {
 
     try {
       String deviceVersion = Build.VERSION.RELEASE;
-      Calendar c           = Calendar.getInstance();
-      String date          = EMPTY_STR
-                              + c.get(Calendar.YEAR)
-                              + c.get(Calendar.MONTH)
-                              + c.get(Calendar.DAY_OF_MONTH)
-                              + c.get(Calendar.HOUR_OF_DAY)
-                              + c.get(Calendar.MINUTE)
-                              + c.get(Calendar.SECOND);
+      Calendar c = Calendar.getInstance();
+      String date = EMPTY_STR
+          + c.get(Calendar.YEAR)
+          + c.get(Calendar.MONTH)
+          + c.get(Calendar.DAY_OF_MONTH)
+          + c.get(Calendar.HOUR_OF_DAY)
+          + c.get(Calendar.MINUTE)
+          + c.get(Calendar.SECOND);
 
       int check = deviceVersion.compareTo("2.3.3");
 
@@ -96,25 +96,26 @@ public class Base64ToGallery extends CordovaPlugin {
        * Environment.DIRECTORY_PICTURES ); //this throws error in Android
        * 2.2
        */
-      if (check >= 1) {
-        folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+      Context ctx = cordova.getActivity();
+      try {
+
+        folder = ctx.getFilesDir();
 
         if (!folder.exists()) {
           folder.mkdirs();
         }
 
-      } else {
-        folder = Environment.getExternalStorageDirectory();
+        File imageFile = new File(folder, prefix + date + ".png");
+
+        FileOutputStream out = new FileOutputStream(imageFile);
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+        out.flush();
+        out.close();
+
+        retVal = imageFile;
+      } catch (Exception e) {
+        System.out.println("Error opening the file");
       }
-
-      File imageFile = new File(folder, prefix + date + ".png");
-
-      FileOutputStream out = new FileOutputStream(imageFile);
-      bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-      out.flush();
-      out.close();
-
-      retVal = imageFile;
 
     } catch (Exception e) {
       Log.e("Base64ToGallery", "An exception occured while saving image: " + e.toString());
